@@ -35,6 +35,7 @@ type Handler struct {
 	*animation.AnimationHandler
 	Shields *shield.Handler
 	infusion.Handler
+	MoonsignLvl int
 
 	// tracking
 	chars   []*character.CharWrapper
@@ -342,3 +343,14 @@ func (h *Handler) Airborne() AirborneSource {
 const (
 	XianyunAirborneBuff = "xianyun-airborne-buff"
 )
+
+func (h *Handler) SetMoonsignLvl(level int) {
+	switch {
+	case level > 2:
+		h.MoonsignLvl = 2
+	case level < 0:
+		h.MoonsignLvl = 0
+	default:
+		h.MoonsignLvl = level
+	}
+}

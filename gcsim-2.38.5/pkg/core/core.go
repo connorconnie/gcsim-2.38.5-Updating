@@ -36,7 +36,6 @@ type Core struct {
 	Combat     *combat.Handler
 	Constructs *construct.Handler
 	Player     *player.Handler
-	MoonsignLvl int // new field
 }
 
 type Flags struct {
@@ -228,14 +227,4 @@ func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 	}
 
 	return index, nil
-}
-
-func (c *Core) SetMoonsignLvl(level int) {
-	if level > 2 {
-		c.MoonsignLvl = 2
-	} else if level < 0 {
-		c.MoonsignLvl = 0
-	} else {
-		c.MoonsignLvl = level
-	}
 }
