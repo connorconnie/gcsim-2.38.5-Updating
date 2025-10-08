@@ -30,6 +30,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{
 		char:  char,
 		Count: count,
+		core:  c,
+		buff:  make([]float64, attributes.EndStatType),
 	}
 
 	// Apply 2-piece effect
@@ -37,7 +39,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = 80 // +80 Elemental Mastery
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("notsu-2pc", -1), // permanent
+			Base:         modifier.NewBase("notsu-2pc", -1),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -49,26 +51,22 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 }
 
 // 4-piece effect
-func (s *Set) MoonsignLvl(newMoonsignLvl int) {
+func (s *Set) ApplyMoonsignBuff() {
 	if s.Count < 4 {
 		return
 	}
 
+	newMoonsignLvl := s.core.Player.MoonsignLvl()
 	const buffKey = "notsu-4pc"
 
-	// If GleamLv is 0 → reset stacks
 	if newMoonsignLvl == 0 {
 		s.stacks = 0
-	} else {
-		// Increase stack if GleamLv increased (max 2)
-		if newMoonsignLvl > s.stacks && s.stacks < 2 {
-			s.stacks++
-		}
+	} else if newMoonsignLvl > s.stacks && s.stacks < 2 {
+		s.stacks++
 	}
 
-	// Apply permanent CR buff (15% per stack)
 	s.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(buffKey, -1), // permanent
+		Base:         modifier.NewBase(buffKey, -1),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			for i := range s.buff {
