@@ -28,6 +28,8 @@ const (
 	AttackTagBurgeon
 	AttackTagHyperbloom
 	AttackTagLength
+	AttackTagLunarCharged
+	AttackTagLunarBloom
 )
 
 type StrikeType int
